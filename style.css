@@ -1,0 +1,78 @@
+body {
+    font-family: Arial;
+    background: #ffe6eb;
+    margin: 0;
+    padding: 0;
+}
+
+/* FORM CONTAINER */
+.container {
+    background: white;
+    padding: 20px;
+    margin: 50px auto;
+    width: 350px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px gray;
+    text-align: center;
+}
+
+/* DATA PAGE FULL WIDTH */
+#dataPage {
+    width: 80%;
+    max-width: 900px;
+}
+
+/* INPUTS */
+input {
+    display: block;
+    width: 95%;
+    margin: 10px auto;
+    padding: 10px;
+}
+
+/* BUTTON */
+button {
+    background: red;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* HIDE */
+.hidden {
+    display: none;
+}
+
+/* TABLE FIX */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* HEADER */
+th {
+    background: red;
+    color: white;
+}
+
+/* CELLS */
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+/* RESPONSIVE FIX */
+@media (max-width: 600px) {
+    #dataPage {
+        width: 95%;
+    }
+
+    table {
+        font-size: 12px;
+    }
+}

@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECommerce Admin Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR STYLING */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 250px;
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding-top: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.hide {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 2px solid #3498db;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin: 10px 0;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: #3498db;
+            color: white;
+            border-left-color: #2ecc71;
+            padding-left: 25px;
+        }
+
+        .sidebar-menu i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.full-width {
+            margin-left: 0;
+        }
+
+        /* TOP NAVBAR */
+        .top-navbar {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .toggle-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background: #2980b9;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-badge {
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+            color: #2c3e50;
+            transition: color 0.3s ease;
+        }
+
+        .notification-badge:hover {
+            color: #3498db;
+        }
+
+        .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* STAT CARDS */
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card.revenue {
+            border-left-color: #2ecc71;
+        }
+
+        .stat-card.revenue::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(46, 204, 113, 0.1);
+            border-radius: 50%;
+            margin: -30px -30px 0 0;
+        }
+
+        .stat-card.orders {
+            border-left-color: #3498db;
+        }
+
+        .stat-card.orders::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 50%;
+            margin: -30px -30px 0 0;
+        }
+
+        .stat-card.customers {
+            border-left-color: #9b59b6;
+        }
+
+        .stat-card.customers::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(155, 89, 182, 0.1);
+            border-radius: 50%;
+            margin: -30px -30px 0 0;
+        }
+
+        .stat-card.products {
+            border-left-color: #f39c12;
+        }
+
+        .stat-card.products::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(243, 156, 18, 0.1);
+            border-radius: 50%;
+            margin: -30px -30px 0 0;
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-card.revenue .stat-icon {
+            color: #2ecc71;
+        }
+
+        .stat-card.orders .stat-icon {
+            color: #3498db;
+        }
+
+        .stat-card.customers .stat-icon {
+            color: #9b59b6;
+        }
+
+        .stat-card.products .stat-icon {
+            color: #f39c12;
+        }
+
+        .stat-title {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+        }
+
+        .stat-change.positive {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .stat-change.negative {
+            background: #fadbd8;
+            color: #c0392b;
+        }
+
+        /* SECTION TITLES */
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #3498db;
+        }
+
+        /* PRODUCTS SECTION */
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            position: relative;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .product-info {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-name {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .product-price {
+            font-size: 18px;
+            color: #27ae60;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .product-rating .stars {
+            color: #f39c12;
+            ;
+        }
+
+        .product-rating .rating-text {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .product-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #95a5a6;
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        /* REVIEWS SECTION */
+        .review-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            border-left: 4px solid #3498db;
+        }
+
+        .review-card:hover {
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .reviewer-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .reviewer-info h6 {
+            margin: 0 0 2px 0;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .reviewer-info small {
+            color: #95a5a6;
+        }
+
+        .review-rating {
+            color: #f39c12;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .review-text {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .review-product {
+            display: inline-block;
+            background: #ecf0f1;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: #2c3e50;
+        }
+
+        /* CHART CONTAINER */
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+            position: relative;
+            height: 400px;
+        }
+
+        /* TABLE STYLING */
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+            overflow-x: auto;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            color: #2c3e50;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+
+        .status-badge.completed {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .status-badge.pending {
+            background: #fef5e7;
+            color: #f39c12;
+        }
+
+        .status-badge.cancelled {
+            background: #fadbd8;
+            color: #c0392b;
+        }
+
+        /* ACTION BUTTONS */
+        .action-btn {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            margin-right: 5px;
+        }
+
+        .action-btn.view {
+            background: #3498db;
+            color: white;
+        }
+
+        .action-btn.view:hover {
+            background: #2980b9;
+        }
+
+        .action-btn.delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .action-btn.delete:hover {
+            background: #c0392b;
+        }
+
+        /* GRID RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                transform: none;
+            }
+
+            .sidebar.hide {
+                transform: none;
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .top-navbar {
+                flex-direction: column;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .stat-card {
+                margin-bottom: 15px;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* FOOTER */
+        .footer {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: #7f8c8d;
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ANALYTICS SECTION */
+        .analytics-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .sales-bar-item {
+            margin-bottom: 25px;
+        }
+
+        .sales-bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .product-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .sales-number {
+            color: #3498db;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .highest-selling-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .highest-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .highest-selling-card h4 {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: white;
+        }
+
+        .total-sales {
+            font-size: 48px;
+            font-weight: bold;
+            color: #fff;
+            margin: 15px 0;
+        }
+
+        .sales-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .sales-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 11px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* SCROLLBAR STYLING */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* ANIMATIONS */
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .animate-in {
+            animation: slideInRight 0.5s ease;
+        }
+
+        /* Alert Styles */
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>
+                <i class="fas fa-chart-line"></i>
+                ShopHub
+            </h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li>
+                <a href="#dashboard" class="active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#products">
+                    <i class="fas fa-boxes"></i>
+                    <span>Products</span>
+                </a>
+            </li>
+            <li>
+                <a href="#orders">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Orders</span>
+                </a>
+            </li>
+            <li>
+                <a href="#customers">
+                    <i class="fas fa-users"></i>
+                    <span>Customers</span>
+                </a>
+            </li>
+            <li>
+                <a href="#reviews">
+                    <i class="fas fa-star"></i>
+                    <span>Reviews</span>
+                </a>
+            </li>
+            <li>
+                <a href="#analytics">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+            </li>
+            <li>
+                <a href="#settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="#logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <!-- TOP NAVBAR -->
+        <nav class="top-navbar">
+            <div class="navbar-left">
+                <h3 style="margin: 0; color: #2c3e50;">Dashboard</h3>
+            </div>
+            <div class="navbar-right">
+                <div class="notification-badge">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </div>
+                <div class="notification-badge">
+                    <i class="fas fa-envelope"></i>
+                    <span class="badge">5</span>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">JD</div>
+                    <div>
+                        <small style="color: #7f8c8d;">Welcome</small>
+                        <br>
+                        <strong style="color: #2c3e50;">John Doe</strong>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- STATISTICS CARDS -->
+        <div class="row mb-4" id="statistics">
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card revenue animate-in">
+                    <div class="stat-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-title">Total Revenue</div>
+                    <div class="stat-value">$45,230</div>
+                    <span class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 12.5% this month
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card orders animate-in">
+                    <div class="stat-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div class="stat-title">Total Orders</div>
+                    <div class="stat-value">1,284</div>
+                    <span class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 8.2% increase
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card customers animate-in">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-title">Total Customers</div>
+                    <div class="stat-value">3,456</div>
+                    <span class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 5.3% growth
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card products animate-in">
+                    <div class="stat-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="stat-title">Active Products</div>
+                    <div class="stat-value">892</div>
+                    <span class="stat-change negative">
+                        <i class="fas fa-arrow-down"></i> 2.1% decrease
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- BEST SELLING PRODUCTS -->
+        <div class="mb-4" id="products">
+            <h3 class="section-title">
+                <i class="fas fa-fire"></i> Best Selling Products
+            </h3>
+            <div class="row">
+                <!-- Product 1 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <i class="fas fa-laptop"></i>
+                            <span class="product-badge">HOT</span>
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Premium Laptop Pro</div>
+                            <div class="product-price">$1,299.99</div>
+                            <div class="product-rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="rating-text">(324 reviews)</span>
+                            </div>
+                            <div class="product-stats">
+                                <span>
+                                    <i class="fas fa-chart-line"></i> 1.2K Sales
+                                </span>
+                                <span>
+                                    <i class="fas fa-eye"></i> 4.5K Views
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="product-card">
+                        <div class="product-image"
+                            style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <i class="fas fa-headphones"></i>
+                            <span class="product-badge" style="background: #2ecc71;">SALE</span>
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Wireless Headphones</div>
+                            <div class="product-price">$199.99</div>
+                            <div class="product-rating">
+                                <span class="stars">★★★★☆</span>
+                                <span class="rating-text">(512 reviews)</span>
+                            </div>
+                            <div class="product-stats">
+                                <span>
+                                    <i class="fas fa-chart-line"></i> 2.3K Sales
+                                </span>
+                                <span>
+                                    <i class="fas fa-eye"></i> 6.2K Views
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="product-card">
+                        <div class="product-image"
+                            style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span class="product-badge" style="background: #3498db;">NEW</span>
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Smartphone X Pro</div>
+                            <div class="product-price">$899.99</div>
+                            <div class="product-rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="rating-text">(687 reviews)</span>
+                            </div>
+                            <div class="product-stats">
+                                <span>
+                                    <i class="fas fa-chart-line"></i> 3.1K Sales
+                                </span>
+                                <span>
+                                    <i class="fas fa-eye"></i> 8.9K Views
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="product-card">
+                        <div class="product-image"
+                            style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                            <i class="fas fa-tablet-alt"></i>
+                            <span class="product-badge" style="background: #9b59b6;">TREND</span>
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">Tablet Ultra</div>
+                            <div class="product-price">$649.99</div>
+                            <div class="product-rating">
+                                <span class="stars">★★★★☆</span>
+                                <span class="rating-text">(445 reviews)</span>
+                            </div>
+                            <div class="product-stats">
+                                <span>
+                                    <i class="fas fa-chart-line"></i> 890 Sales
+                                </span>
+                                <span>
+                                    <i class="fas fa-eye"></i> 3.2K Views
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SALES ANALYTICS BY PRODUCT -->
+        <div class="mb-4" id="analytics">
+            <h3 class="section-title">
+                <i class="fas fa-chart-bar"></i> Sales Analytics by Product
+            </h3>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="analytics-container">
+                        <h5 style="margin-bottom: 20px; color: #2c3e50;">Product Sales Performance</h5>
+                        <div class="sales-bar-item">
+                            <div class="sales-bar-header">
+                                <span class="product-label">Wireless Headphones</span>
+                                <span class="sales-number">2,350 Sales</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%; background-color: #2ecc71;"></div>
+                            </div>
+                        </div>
+
+                        <div class="sales-bar-item">
+                            <div class="sales-bar-header">
+                                <span class="product-label">Smartphone X Pro</span>
+                                <span class="sales-number">3,100 Sales</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 98%; background-color: #3498db;"></div>
+                            </div>
+                        </div>
+
+                        <div class="sales-bar-item">
+                            <div class="sales-bar-header">
+                                <span class="product-label">Premium Laptop Pro</span>
+                                <span class="sales-number">1,200 Sales</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 39%; background-color: #f39c12;"></div>
+                            </div>
+                        </div>
+
+                        <div class="sales-bar-item">
+                            <div class="sales-bar-header">
+                                <span class="product-label">Tablet Ultra</span>
+                                <span class="sales-number">890 Sales</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 28%; background-color: #9b59b6;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="highest-selling-card">
+                        <div class="highest-badge">
+                            <i class="fas fa-crown"></i> Highest Selling
+                        </div>
+                        <h4>Smartphone X Pro</h4>
+                        <div class="total-sales">3,100</div>
+                        <div class="sales-label">Total Sales This Month</div>
+                        <div class="sales-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Price</span>
+                                <span class="stat-value">$899.99</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Revenue</span>
+                                <span class="stat-value">$2.79M</span>
+                            </div>
+                        </div>
+                        <div class="sales-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Views</span>
+                                <span class="stat-value">8,900</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Rating</span>
+                                <span class="stat-value">★★★★★</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RECENT ORDERS TABLE -->
+        <div class="table-container mb-4" id="orders">
+            <h3 class="section-title mb-3">
+                <i class="fas fa-list"></i> Recent Orders
+            </h3>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Product</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#ORD-2026-001</td>
+                        <td>
+                            <strong>Alex Johnson</strong>
+                        </td>
+                        <td>Premium Laptop Pro</td>
+                        <td>$1,299.99</td>
+                        <td>Apr 18, 2026</td>
+                        <td>
+                            <span class="status-badge completed">Completed</span>
+                        </td>
+                        <td>
+                            <button class="action-btn view">View</button>
+                            <button class="action-btn delete">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#ORD-2026-002</td>
+                        <td>
+                            <strong>Sarah Smith</strong>
+                        </td>
+                        <td>Wireless Headphones</td>
+                        <td>$199.99</td>
+                        <td>Apr 17, 2026</td>
+                        <td>
+                            <span class="status-badge pending">Pending</span>
+                        </td>
+                        <td>
+                            <button class="action-btn view">View</button>
+                            <button class="action-btn delete">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#ORD-2026-003</td>
+                        <td>
+                            <strong>Mike Brown</strong>
+                        </td>
+                        <td>Smartphone X Pro</td>
+                        <td>$899.99</td>
+                        <td>Apr 17, 2026</td>
+                        <td>
+                            <span class="status-badge completed">Completed</span>
+                        </td>
+                        <td>
+                            <button class="action-btn view">View</button>
+                            <button class="action-btn delete">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#ORD-2026-004</td>
+                        <td>
+                            <strong>Emily Davis</strong>
+                        </td>
+                        <td>Tablet Ultra</td>
+                        <td>$649.99</td>
+                        <td>Apr 16, 2026</td>
+                        <td>
+                            <span class="status-badge cancelled">Cancelled</span>
+                        </td>
+                        <td>
+                            <button class="action-btn view">View</button>
+                            <button class="action-btn delete">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#ORD-2026-005</td>
+                        <td>
+                            <strong>Tom Wilson</strong>
+                        </td>
+                        <td>Premium Laptop Pro</td>
+                        <td>$1,299.99</td>
+                        <td>Apr 16, 2026</td>
+                        <td>
+                            <span class="status-badge completed">Completed</span>
+                        </td>
+                        <td>
+                            <button class="action-btn view">View</button>
+                            <button class="action-btn delete">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- CUSTOMER REVIEWS -->
+        <div class="mb-4" id="reviews">
+            <h3 class="section-title">
+                <i class="fas fa-comments"></i> Customer Reviews & Testimonials
+            </h3>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-avatar">AJ</div>
+                            <div class="reviewer-info flex-grow-1">
+                                <h6>Alex Johnson</h6>
+                                <small>Verified Purchase • 2 days ago</small>
+                            </div>
+                            <div class="review-rating">
+                                ★★★★★
+                            </div>
+                        </div>
+                        <div class="review-text">
+                            "Amazing product quality! The Premium Laptop Pro exceeded all my expectations. Fast shipping
+                            and excellent customer service. Highly recommend!"
+                        </div>
+                        <span class="review-product">Premium Laptop Pro</span>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-avatar"
+                                style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">SS</div>
+                            <div class="reviewer-info flex-grow-1">
+                                <h6>Sarah Smith</h6>
+                                <small>Verified Purchase • 5 days ago</small>
+                            </div>
+                            <div class="review-rating">
+                                ★★★★☆
+                            </div>
+                        </div>
+                        <div class="review-text">
+                            "Great value for money. The wireless headphones have excellent sound quality. Battery life
+                            is impressive. Only minor issue with the charging cable."
+                        </div>
+                        <span class="review-product">Wireless Headphones</span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-avatar"
+                                style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">MB</div>
+                            <div class="reviewer-info flex-grow-1">
+                                <h6>Mike Brown</h6>
+                                <small>Verified Purchase • 1 week ago</small>
+                            </div>
+                            <div class="review-rating">
+                                ★★★★★
+                            </div>
+                        </div>
+                        <div class="review-text">
+                            "Smartphone X Pro is a game-changer! The camera quality is stunning, and the performance is
+                            buttery smooth. Worth every penny!"
+                        </div>
+                        <span class="review-product">Smartphone X Pro</span>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-avatar"
+                                style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">ED</div>
+                            <div class="reviewer-info flex-grow-1">
+                                <h6>Emily Davis</h6>
+                                <small>Verified Purchase • 10 days ago</small>
+                            </div>
+                            <div class="review-rating">
+                                ★★★★☆
+                            </div>
+                        </div>
+                        <div class="review-text">
+                            "Tablet Ultra is fantastic for productivity. Great display and build quality. Delivery was
+                            quick. Minor software updates needed."
+                        </div>
+                        <span class="review-product">Tablet Ultra</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <p>&copy; 2026 ShopHub - E-Commerce Admin Dashboard. All rights reserved. | Designed with <i
+                    class="fas fa-heart" style="color: #e74c3c;"></i> by Your Team</p>
+        </footer>
+    </div>
+
+</body>
+
+</html>

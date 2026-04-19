@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Registered Users</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Registered Users</h2>
+    <ul id="userList"></ul>
+</div>
+
+<script>
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    let list = document.getElementById("userList");
+
+    users.forEach(user => {
+        let li = document.createElement("li");
+        li.innerHTML = `
+            <strong>${user.name}</strong><br>
+            ${user.email}<br>
+            ${user.phone}
+            <hr>
+        `;
+        list.appendChild(li);
+    });
+</script>
+
+</body>
+</html>
